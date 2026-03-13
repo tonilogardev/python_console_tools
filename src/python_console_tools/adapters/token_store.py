@@ -5,6 +5,8 @@ import os
 from pathlib import Path
 from typing import Optional
 
+import logging
+
 try:
     import keyring
 except ImportError:  # pragma: no cover - optional dep fallback handled
@@ -13,6 +15,7 @@ except ImportError:  # pragma: no cover - optional dep fallback handled
 
 SERVICE_NAME = "python_console_tools"
 FALLBACK_PATH = Path.home() / ".python_console_tools" / "auth.json"
+logger = logging.getLogger(__name__)
 
 
 class TokenPair:
@@ -38,8 +41,11 @@ class TokenPair:
 
 def save_tokens(token_pair: TokenPair) -> None:
     if keyring:
-        keyring.set_password(SERVICE_NAME, "tokens", token_pair.to_json())
-        return
+        try:
+            keyring.set_password(SERVICE_NAME, "tokens", token_pair.to_json())
+            return
+        except Exception as exc:  # pragma: no cover - platform-specific
+            logger.warning("Keyring save failed (%s), falling back to file store", exc)
 
     FALLBACK_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(FALLBACK_PATH, "w", encoding="utf-8") as fh:
