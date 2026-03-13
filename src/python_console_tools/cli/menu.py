@@ -23,20 +23,25 @@ def menu(ctx: typer.Context) -> None:
     if not logged_in:
         options["1"] = ("Login / Signup (Auth0)", auth_login)
     else:
-        options["1"] = (f"Status ({status_text})", auth_status)
-        options["2"] = ("Logout", auth_logout)
-        options["3"] = ("Create seam", None)
-        options["4"] = ("Download Copernicus data", None)
+        options["1"] = ("Search north south seam", None)
+        options["2"] = ("Search clouds seam", None)
+        options["3"] = ("Create Mosaic", None)
+        options["9"] = ("Status", auth_status)
+        options["0"] = ("Logout", auth_logout)
 
     # Si hubiera subcomandos, no ejecutar el menú principal.
     if ctx.invoked_subcommand:
         return
 
-    console.print("[cyan]Select option:[/]")
+    console.print("[bold red]Type exit to leave the app[/]")
+    console.print("[cyan]Select app:[/]")
     for key, (label, _) in options.items():
         console.print(f"[bold white]{key}[/]: {label}")
 
     choice = typer.prompt("Your choice")
+    if choice.lower() == "exit":
+        raise typer.Exit()
+
     if choice in options:
         label, action = options[choice]
         console.print(f"[bold green]✓[/] Has elegido: [yellow]{label}[/]")
