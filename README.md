@@ -1,54 +1,55 @@
 # python_console_tools
 
-CLI modular en Python con Typer, Rich y buenas prácticas listas para usar.
+## Index
 
-## Requisitos
-- Python 3.11+
-- `pip` y `venv` (o `uv`/`poetry` si prefieres)
+1. [Business Policy](#1-business-policy)
+2. [Run Flow](#2-run-flow)
+3. [Auth & Config](#3-auth--config)
+4. [Geo Tools](#4-geo-tools)
+5. [Next steps](#5-next-steps)
 
-## Instalación rápida (pip + venv)
-```bash
-python -m venv .venv
-. .venv/Scripts/activate  # PowerShell: .venv\Scripts\Activate.ps1
-pip install -e .[dev]
-pre-commit install
-```
+---
 
-## Uso
-```bash
-python -m python_console_tools --help
-python -m python_console_tools menu
-```
+## 1 Business Policy
 
-## Tareas comunes
-- Lint: `ruff check src tests`
-- Formato: `ruff format src tests`
-- Tipos: `mypy src`
-- Tests: `pytest`
-- Cobertura: `coverage run -m pytest` seguido de `coverage report`
-- Seguridad: `bandit -r src` y `pip-audit`
+- ***Instruction***: Ship value fast; avoid over‑engineering. Less code, more results.
+- ***Instruction***: Defaults first. Only ask user for data you cannot infer.
+- ***Instruction***: Log clearly; never log secrets. Fail loud, fail early.
 
-## Configuración
-- Variables de entorno en `.env` (ver `.env.example`).
-- Auth0 (Device Flow): `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_AUDIENCE`.
-- Logging configurable en `configs/logging.dev.yaml`.
+[←Index](#index)
 
-## Estructura
-```
-.
-├── pyproject.toml
-├── src/python_console_tools
-│   ├── __main__.py
-│   ├── cli/        # comandos Typer
-│   ├── services/   # lógica de negocio
-│   ├── core/       # modelos/DTOs
-│   ├── adapters/   # integraciones (token store, http, etc.)
-│   └── settings.py
-├── tests/
-└── configs/logging.dev.yaml
-```
+## 2 Run Flow
 
-## Próximos pasos
-- Ajusta `project.name` y autoría en `pyproject.toml`.
-- Consulta estándares en [CONTRIBUTING.md](CONTRIBUTING.md) y [docs/engineering-guidelines.md](docs/engineering-guidelines.md).
-- CI: ver `.github/workflows/ci.yml` (ruff, mypy, pytest+coverage>=85, bandit).
+- ***Instruction***: `python -m python_console_tools` abre login Auth0 y muestra menú (type `exit` para salir).
+- ***Instruction***: Menú opciones: 1 Search north south seam; 2 Search clouds seam; 3 Create Mosaic; 9 Status; 0 Logout.
+- ***File References***:
+  - Menú [src/python_console_tools/cli/menu.py](./src/python_console_tools/cli/menu.py)
+  - Auth login [src/python_console_tools/cli/auth.py](./src/python_console_tools/cli/auth.py)
+
+[←Index](#index)
+
+## 3 Auth & Config
+
+- ***Instruction***: Completa [.env](./.env.example) con `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_AUDIENCE`.
+- ***Instruction***: Callback permitido en Auth0: `http://127.0.0.1:8765/callback`.
+- ***Instruction***: Logs/config en [configs/logging.dev.yaml](./configs/logging.dev.yaml).
+
+[←Index](#index)
+
+## 4 Geo Tools
+
+- ***Instruction***: Instala deps geo en conda: `mamba create -n pctools-gis python=3.11 gdal proj pytorch torchvision torchgeo rasterio geopandas numba -c conda-forge -y` y luego `pip install -e .[dev,geo]`.
+- ***Instruction***: Seam N-S: `python -m python_console_tools seam search-north-south --img-east <R008> --img-west <R051> --mask <mask> --out <dir>`.
+- ***File References***:
+  - Dijkstra pipeline [src/python_console_tools/seam/dijkstra.py](./src/python_console_tools/seam/dijkstra.py)
+  - CLI comando seam [src/python_console_tools/cli/seam.py](./src/python_console_tools/cli/seam.py)
+  - Handler GeoTIFF [src/python_console_tools/geo/handler.py](./src/python_console_tools/geo/handler.py)
+
+[←Index](#index)
+
+## 5 Next steps
+
+- Añadir opción “Search clouds seam” y “Create Mosaic” apuntando a pipelines reales.
+- Registrar ADRs en `docs/` siguiendo el skill principal-architect.
+
+[←Index](#index)
