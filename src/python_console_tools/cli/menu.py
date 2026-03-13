@@ -37,3 +37,10 @@ def menu(ctx: typer.Context) -> None:
             action()
     else:
         console.print("[bold red]✗[/] Opción no válida", style="bold red")
+
+
+def run_menu() -> None:
+    """Invoca el menú interactivo directamente (uso desde __main__)."""
+
+    ctx = typer.Context(menu_app)
+    menu(ctx)
