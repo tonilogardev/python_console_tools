@@ -4,22 +4,29 @@ from rich.console import Console
 from python_console_tools.cli.auth import login as auth_login
 from python_console_tools.cli.auth import logout as auth_logout
 from python_console_tools.cli.auth import status as auth_status
+from python_console_tools.services.auth_service import AuthService
+from python_console_tools.settings import get_settings
 
-menu_app = typer.Typer(invoke_without_command=True, help="Menú interactivo de ejemplo")
+menu_app = typer.Typer(invoke_without_command=True, help="Menú interactivo")
 console = Console()
 
 
 @menu_app.callback(invoke_without_command=True)
 def menu(ctx: typer.Context) -> None:
-    """Muestra un menú simple y permite login vía Auth0."""
+    """Muestra menú principal."""
 
-    options = {
-        "1": ("Login / Signup (Auth0)", auth_login),
-        "2": ("Status", auth_status),
-        "3": ("Logout", auth_logout),
-        "4": ("Create seam", None),
-        "5": ("Download Copernicus data", None),
-    }
+    service = AuthService(get_settings())
+    status_text = service.status()
+    logged_in = status_text != "Not logged in"
+
+    options: dict[str, tuple[str, callable | None]] = {}
+    if not logged_in:
+        options["1"] = ("Login / Signup (Auth0)", auth_login)
+    else:
+        options["1"] = (f"Status ({status_text})", auth_status)
+        options["2"] = ("Logout", auth_logout)
+        options["3"] = ("Create seam", None)
+        options["4"] = ("Download Copernicus data", None)
 
     # Si hubiera subcomandos, no ejecutar el menú principal.
     if ctx.invoked_subcommand:
