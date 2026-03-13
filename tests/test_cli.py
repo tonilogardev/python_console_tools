@@ -10,3 +10,4 @@ def test_app_help() -> None:
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
     assert "auth" in result.stdout
+    assert "menu" in result.stdout

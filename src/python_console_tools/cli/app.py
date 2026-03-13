@@ -1,6 +1,7 @@
 import typer
 
-from python_console_tools.cli import auth, data, mosaic, seam, geoservice
+from python_console_tools.cli import auth, data, geoservice, mosaic, seam
+import python_console_tools.cli.menu  # noqa: F401  # registra comando "menu"
 
 app = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
 
