@@ -125,13 +125,14 @@ class AuthService:
             return self.client.userinfo(refreshed.access_token)
 
     def status(self) -> str:
+        tokens = load_tokens()
+        if not tokens:
+            return "Not logged in"
         try:
             info = self.userinfo()
             return f"Logged in as {info.get('email') or info.get('sub')}"
-        except AuthError:
-            return "Not logged in"
-        except httpx.HTTPStatusError:
-            return "Not logged in"
+        except Exception:
+            return "Logged in (token stored)"
 
     def logout(self) -> None:
         clear_tokens()
