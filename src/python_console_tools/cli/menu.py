@@ -1,8 +1,7 @@
 import typer
 from rich.console import Console
 
-from python_console_tools.cli.app import app  # to reuse typer context
-
+app = typer.Typer(help="Menú interactivo")
 console = Console()
 
 
