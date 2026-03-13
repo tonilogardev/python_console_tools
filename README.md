@@ -1,6 +1,6 @@
 # python_console_tools
 
-Proyecto base para herramientas de consola en Python con tipado, logging estructurado y buenas prácticas listas para usar.
+CLI modular en Python con Typer, Rich y buenas prácticas listas para usar.
 
 ## Requisitos
 - Python 3.11+
@@ -9,7 +9,7 @@ Proyecto base para herramientas de consola en Python con tipado, logging estruct
 ## Instalación rápida (pip + venv)
 ```bash
 python -m venv .venv
-. .venv/Scripts/activate  # Windows PowerShell: .venv\Scripts\Activate.ps1
+. .venv/Scripts/activate  # PowerShell: .venv\Scripts\Activate.ps1
 pip install -e .[dev]
 pre-commit install
 ```
@@ -17,6 +17,7 @@ pre-commit install
 ## Uso
 ```bash
 python -m python_console_tools --help
+python -m python_console_tools menu
 ```
 
 ## Tareas comunes
@@ -29,6 +30,7 @@ python -m python_console_tools --help
 
 ## Configuración
 - Variables de entorno en `.env` (ver `.env.example`).
+- Auth0 (Device Flow): `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_AUDIENCE`.
 - Logging configurable en `configs/logging.dev.yaml`.
 
 ## Estructura
@@ -37,8 +39,10 @@ python -m python_console_tools --help
 ├── pyproject.toml
 ├── src/python_console_tools
 │   ├── __main__.py
-│   ├── cli.py
-│   ├── logging_setup.py
+│   ├── cli/        # comandos Typer
+│   ├── services/   # lógica de negocio
+│   ├── core/       # modelos/DTOs
+│   ├── adapters/   # integraciones (token store, http, etc.)
 │   └── settings.py
 ├── tests/
 └── configs/logging.dev.yaml
@@ -46,6 +50,5 @@ python -m python_console_tools --help
 
 ## Próximos pasos
 - Ajusta `project.name` y autoría en `pyproject.toml`.
-- Para publicar, ejecuta `git add . && git commit -m "chore: bootstrap" && git push -u origin main`.
 - Consulta estándares en [CONTRIBUTING.md](CONTRIBUTING.md) y [docs/engineering-guidelines.md](docs/engineering-guidelines.md).
 - CI: ver `.github/workflows/ci.yml` (ruff, mypy, pytest+coverage>=85, bandit).
