@@ -1,11 +1,11 @@
 import typer
 from rich.console import Console
 
-app = typer.Typer(help="Menú interactivo")
+menu_app = typer.Typer(help="Menú interactivo")
 console = Console()
 
 
-@app.command("menu")
+@menu_app.command("menu")
 def menu() -> None:
     """Menú interactivo de ejemplo."""
 
