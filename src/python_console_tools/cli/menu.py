@@ -16,18 +16,22 @@ def menu(ctx: typer.Context) -> None:
     """Muestra menú principal."""
 
     service = AuthService(get_settings())
-    status_text = service.status()
+    status_text = service.status()  # asegúrate que status() no rompe
     logged_in = status_text != "Not logged in"
 
-    options: dict[str, tuple[str, callable | None]] = {}
     if not logged_in:
-        options["1"] = ("Login / Signup (Auth0)", auth_login)
-    else:
-        options["1"] = ("Search north south seam", None)
-        options["2"] = ("Search clouds seam", None)
-        options["3"] = ("Create Mosaic", None)
-        options["9"] = ("Status", auth_status)
-        options["0"] = ("Logout", auth_logout)
+        console.print("[bold yellow]Autenticando con Auth0...[/]")
+        auth_login()
+        status_text = service.status()
+        logged_in = status_text != "Not logged in"
+
+    options: dict[str, tuple[str, callable | None]] = {
+        "1": ("Search north south seam", None),
+        "2": ("Search clouds seam", None),
+        "3": ("Create Mosaic", None),
+        "9": (f"Status ({status_text})", auth_status),
+        "0": ("Logout", auth_logout),
+    }
 
     # Si hubiera subcomandos, no ejecutar el menú principal.
     if ctx.invoked_subcommand:
