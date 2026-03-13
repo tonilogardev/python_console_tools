@@ -13,12 +13,19 @@ def ensure_authenticated() -> None:
 
 
 def main() -> None:
-    # Si se ejecuta sin argumentos, forzamos login y luego mostramos menú.
-    if len(sys.argv) == 1:
+    args = sys.argv[1:]
+
+    def is_auth_passthrough() -> bool:
+        return len(args) >= 2 and args[0] == "auth" and args[1] in {"login", "logout", "signup"}
+
+    if not args:
         ensure_authenticated()
         run_menu()
-    else:
-        app()
+        return
+
+    if not is_auth_passthrough():
+        ensure_authenticated()
+    app()
 
 
 if __name__ == "__main__":
