@@ -38,6 +38,8 @@ geo = [
   "torchgeo>=0.5",
   "rasterio>=1.3.9",
   "geopandas>=0.14",
+  "numba>=0.59",
+  "gdal>=3.6 ; platform_system != 'Windows'",  # Windows: instalar via conda
 ]
 
 [tool.ruff]

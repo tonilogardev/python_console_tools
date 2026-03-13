@@ -13,7 +13,7 @@ def menu(ctx: typer.Context) -> None:
     """Muestra menú principal."""
 
     options: dict[str, tuple[str, callable | None]] = {
-        "1": ("Search north south seam", None),
+        "1": ("Search north south seam", _menu_search_north_south),
         "2": ("Search clouds seam", None),
         "3": ("Create Mosaic", None),
         "9": ("Status", auth_status),
@@ -47,3 +47,34 @@ def run_menu() -> None:
 
     ctx = typer.Context(menu_app)
     menu(ctx)
+
+
+def _menu_search_north_south() -> None:
+    from python_console_tools.services.seam_service import SeamService
+    from python_console_tools.settings import get_settings
+
+    img_east = typer.prompt("Ruta imagen ESTE (R008)")
+    img_west = typer.prompt("Ruta imagen OESTE (R051)")
+    mask = typer.prompt("Ruta máscara solape (.shp/.gpkg/.msk)")
+    out_dir = typer.prompt("Directorio de salida")
+    buffer_pixels = typer.prompt("Buffer en píxeles", default="15")
+    block_size = typer.prompt("Tamaño de bloque", default="4096")
+
+    service = SeamService(get_settings())
+    try:
+        ok, mosaic = service.search_north_south_seam(
+            img_east=img_east,
+            img_west=img_west,
+            mask=mask,
+            out_dir=out_dir,
+            buffer_pixels=int(buffer_pixels),
+            block_size=int(block_size),
+        )
+    except Exception as exc:
+        console.print(f"[bold red]✗[/] {exc}")
+        return
+
+    if ok:
+        console.print(f"[bold green]✓[/] Mosaico generado: {mosaic}")
+    else:
+        console.print("[bold red]✗[/] Proceso terminado sin mosaico")
