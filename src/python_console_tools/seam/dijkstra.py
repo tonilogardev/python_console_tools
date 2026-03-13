@@ -8,15 +8,24 @@ from typing import Iterable, List, Optional, Tuple
 
 import numpy as np
 from numba import njit
-from osgeo import gdal, ogr, osr
+try:
+    from osgeo import gdal, ogr, osr
+    gdal.UseExceptions()
+    gdal.SetCacheMax(4 * 1024 * 1024 * 1024)  # 4 GB GDAL cache
+except Exception as exc:  # pragma: no cover
+    gdal = None
+    ogr = None
+    osr = None
+    import_error = exc
+else:
+    import_error = None
 
-gdal.UseExceptions()
 logger = logging.getLogger(__name__)
-
-gdal.SetCacheMax(4 * 1024 * 1024 * 1024)  # 4 GB GDAL cache
 
 
 def create_buffered_polygon(vec_in_path: Path, ref_img_path: Path, r008_name: str, r051_name: str, out_dir: Path, buffer_pixels: int = 15):
+    if gdal is None:
+        raise RuntimeError(f"GDAL/OSGeo no disponible: {import_error}")
     ref_ds = gdal.Open(str(ref_img_path))
     if not ref_ds:
         raise RuntimeError(f"No se pudo abrir la imagen de referencia: {ref_img_path}")

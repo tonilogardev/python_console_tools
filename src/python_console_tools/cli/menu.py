@@ -14,8 +14,9 @@ def menu(ctx: typer.Context) -> None:
 
     options: dict[str, tuple[str, callable | None]] = {
         "1": ("Search north south seam", _menu_search_north_south),
-        "2": ("Search clouds seam", None),
-        "3": ("Create Mosaic", None),
+        # Reservadas para futuro:
+        # "2": ("Search clouds seam", None),
+        # "3": ("Create Mosaic", None),
         "9": ("Status", auth_status),
         "0": ("Logout", auth_logout),
     }
