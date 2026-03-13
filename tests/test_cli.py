@@ -1,12 +1,12 @@
 from typer.testing import CliRunner
 
-from python_console_tools.cli import app
+from python_console_tools.cli.app import app
 
 
 runner = CliRunner()
 
 
-def test_greet() -> None:
-    result = runner.invoke(app, ["greet", "Codex"])
+def test_app_help() -> None:
+    result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    assert "Codex" in result.stdout
+    assert "auth" in result.stdout

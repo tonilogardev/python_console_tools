@@ -1,4 +1,4 @@
-from python_console_tools.cli import app
+from python_console_tools.cli.app import app
 
 
 def main() -> None:
