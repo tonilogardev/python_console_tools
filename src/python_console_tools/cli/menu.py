@@ -2,7 +2,9 @@ import typer
 from rich.console import Console
 
 from python_console_tools.cli.auth import login as auth_login
+from python_console_tools.cli.auth import logout as auth_logout
 from python_console_tools.cli.auth import signup as auth_signup
+from python_console_tools.cli.auth import status as auth_status
 
 menu_app = typer.Typer(invoke_without_command=True, help="Menú interactivo de ejemplo")
 console = Console()
@@ -15,8 +17,10 @@ def menu(ctx: typer.Context) -> None:
     options = {
         "1": ("Login", auth_login),
         "2": ("Signup", auth_signup),
-        "3": ("Create seam", None),
-        "4": ("Download Copernicus data", None),
+        "3": ("Status", auth_status),
+        "4": ("Logout", auth_logout),
+        "5": ("Create seam", None),
+        "6": ("Download Copernicus data", None),
     }
 
     # Si hubiera subcomandos, no ejecutar el menú principal.
