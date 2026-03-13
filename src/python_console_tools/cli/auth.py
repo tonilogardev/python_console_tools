@@ -30,24 +30,11 @@ def signup(
 
 @app.command()
 def login() -> None:
-    """Login via Auth0 Device Flow y guarda tokens en almacén seguro."""
+    """Login/Signup en navegador (PKCE)."""
 
     service = _service()
     try:
-        flow = service.start_device_flow()
-    except AuthError as exc:
-        console.print(f"[bold red]✗[/] {exc}")
-        raise typer.Exit(code=1)
-
-    console.print("[cyan]Abre en tu navegador y completa el login:[/]")
-    if flow.get("verification_uri_complete"):
-        console.print(f"[bold yellow]{flow['verification_uri_complete']}[/]")
-    else:
-        console.print(f"URL: {flow['verification_uri']}, code: [bold]{flow['user_code']}[/]")
-
-    console.print("[cyan]Esperando autorización...[/]")
-    try:
-        service.poll_device_flow(flow["device_code"], flow.get("interval", 5))
+        service.start_pkce_flow()
     except AuthError as exc:
         console.print(f"[bold red]✗[/] {exc}")
         raise typer.Exit(code=1)

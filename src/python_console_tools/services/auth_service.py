@@ -6,6 +6,8 @@ from typing import Any, Dict, Optional
 import httpx
 
 from python_console_tools.adapters.auth0 import Auth0Client
+from python_console_tools.adapters.local_server import run_once
+from python_console_tools.adapters.pkce import generate_pkce
 from python_console_tools.adapters.token_store import TokenPair, clear_tokens, load_tokens, save_tokens
 from python_console_tools.settings import Settings
 
@@ -30,6 +32,30 @@ class AuthService:
     def start_device_flow(self) -> Dict[str, Any]:
         self._ensure_config()
         return self.client.device_code()
+
+    def start_pkce_flow(self) -> TokenPair:
+        self._ensure_config()
+        pkce = generate_pkce()
+        redirect_uri = f"http://{self.settings.auth_redirect_host}:{self.settings.auth_redirect_port}/callback"
+        url = self.client.authorize_url(redirect_uri=redirect_uri, code_challenge=pkce.challenge)
+
+        import webbrowser
+
+        webbrowser.open(url)
+        result = run_once(self.settings.auth_redirect_host, self.settings.auth_redirect_port, timeout=self.settings.auth_poll_timeout)
+        if result.error:
+            raise AuthError(result.error)
+        if not result.code:
+            raise AuthError("No code received (timeout o cancelado)")
+
+        data = self.client.token_with_pkce(code=result.code, code_verifier=pkce.verifier, redirect_uri=redirect_uri)
+        token = TokenPair(
+            access_token=data["access_token"],
+            refresh_token=data.get("refresh_token"),
+            id_token=data.get("id_token"),
+        )
+        save_tokens(token)
+        return token
 
     def poll_device_flow(self, device_code: str, interval: int) -> TokenPair:
         self._ensure_config()

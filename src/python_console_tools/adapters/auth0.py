@@ -19,6 +19,33 @@ class Auth0Client:
             resp.raise_for_status()
             return resp.json()
 
+    def authorize_url(self, redirect_uri: str, code_challenge: str, scope: str = "openid profile email offline_access") -> str:
+        from urllib.parse import urlencode
+
+        params = {
+            "response_type": "code",
+            "client_id": self.client_id,
+            "redirect_uri": redirect_uri,
+            "scope": scope,
+            "audience": self.audience,
+            "code_challenge": code_challenge,
+            "code_challenge_method": "S256",
+        }
+        return f"{self.base}/authorize?{urlencode(params)}"
+
+    def token_with_pkce(self, code: str, code_verifier: str, redirect_uri: str) -> Dict[str, Any]:
+        payload = {
+            "grant_type": "authorization_code",
+            "client_id": self.client_id,
+            "code_verifier": code_verifier,
+            "code": code,
+            "redirect_uri": redirect_uri,
+        }
+        with httpx.Client(timeout=self.timeout) as client:
+            resp = client.post(f"{self.base}/oauth/token", data=payload)
+            resp.raise_for_status()
+            return resp.json()
+
     def poll_device(self, device_code: str) -> Dict[str, Any]:
         payload = {
             "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
