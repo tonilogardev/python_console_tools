@@ -37,7 +37,11 @@ class AuthService:
         self._ensure_config()
         pkce = generate_pkce()
         redirect_uri = f"http://{self.settings.auth_redirect_host}:{self.settings.auth_redirect_port}/callback"
-        url = self.client.authorize_url(redirect_uri=redirect_uri, code_challenge=pkce.challenge)
+        url = self.client.authorize_url(
+            redirect_uri=redirect_uri,
+            code_challenge=pkce.challenge,
+            prompt="login",
+        )
 
         import webbrowser
 

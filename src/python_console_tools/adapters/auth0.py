@@ -19,7 +19,13 @@ class Auth0Client:
             resp.raise_for_status()
             return resp.json()
 
-    def authorize_url(self, redirect_uri: str, code_challenge: str, scope: str = "openid profile email offline_access") -> str:
+    def authorize_url(
+        self,
+        redirect_uri: str,
+        code_challenge: str,
+        scope: str = "openid profile email offline_access",
+        prompt: str = "login",
+    ) -> str:
         from urllib.parse import urlencode
 
         params = {
@@ -30,6 +36,7 @@ class Auth0Client:
             "audience": self.audience,
             "code_challenge": code_challenge,
             "code_challenge_method": "S256",
+            "prompt": prompt,
         }
         return f"{self.base}/authorize?{urlencode(params)}"
 
