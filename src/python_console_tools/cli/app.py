@@ -2,6 +2,7 @@ import typer
 
 from python_console_tools.cli import auth, data, geoservice, mosaic, seam
 from python_console_tools.cli import menu
+from python_console_tools.cli import geo
 
 app = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
 
@@ -11,6 +12,7 @@ app.add_typer(data.app, name="data", help="Descarga de datos Copernicus")
 app.add_typer(mosaic.app, name="mosaic", help="Generar mosaicos (ej. Cataluña)")
 app.add_typer(geoservice.app, name="geoservice", help="Operaciones sobre geoservicio")
 app.add_typer(menu.menu_app, name="menu", help="Menú interactivo")
+app.add_typer(geo.geo_app, name="geo", help="Herramientas geoespaciales/ML")
 
 
 @app.callback()
