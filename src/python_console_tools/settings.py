@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     auth0_domain: str | None = None
     auth0_client_id: str | None = None
     auth0_audience: str | None = None
+    auth0_db_connection: str = "Username-Password-Authentication"
     auth_poll_timeout: int = 600  # seconds
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")

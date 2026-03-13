@@ -14,6 +14,21 @@ def _service() -> AuthService:
 
 
 @app.command()
+def signup(
+    email: str = typer.Argument(..., help="Email de usuario"),
+    password: str = typer.Option(..., "--password", "-p", prompt=True, hide_input=True, confirmation_prompt=True),
+) -> None:
+    """Registra un usuario en Auth0 (DB Connection) sin guardar contraseña."""
+
+    try:
+        _service().signup(email=email, password=password)
+    except AuthError as exc:
+        console.print(f"[bold red]✗[/] {exc}")
+        raise typer.Exit(code=1)
+    console.print("[bold green]✓[/] Usuario creado. Ejecuta 'auth login' para iniciar sesión.")
+
+
+@app.command()
 def login() -> None:
     """Login via Auth0 Device Flow y guarda tokens en almacén seguro."""
 
@@ -32,7 +47,7 @@ def login() -> None:
 
     console.print("[cyan]Esperando autorización...[/]")
     try:
-        token = service.poll_device_flow(flow["device_code"], flow.get("interval", 5))
+        service.poll_device_flow(flow["device_code"], flow.get("interval", 5))
     except AuthError as exc:
         console.print(f"[bold red]✗[/] {exc}")
         raise typer.Exit(code=1)
