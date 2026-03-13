@@ -21,6 +21,7 @@ description: >
 - Commits estilo conventional (`feat|fix|chore|docs|refactor|test: mensaje`).
 - PR: explicar qué/por qué/riesgos; checklist de checks ejecutados.
 - Merge por PR; preferir squash si hay commits pequeños.
+- Push con mesura: agrupa cambios coherentes, sólo tras pasar checks locales; evita pushes parciales o consecutivos sin valor.
 
 ## Checks obligatorios
 - `ruff format --check src tests`
