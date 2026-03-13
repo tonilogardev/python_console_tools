@@ -1,13 +1,13 @@
 import typer
 from rich.console import Console
 
-menu_app = typer.Typer(help="Menú interactivo")
+menu_app = typer.Typer(invoke_without_command=True, help="Menú interactivo de ejemplo")
 console = Console()
 
 
-@menu_app.command("menu")
-def menu() -> None:
-    """Menú interactivo de ejemplo."""
+@menu_app.callback(invoke_without_command=True)
+def menu(ctx: typer.Context) -> None:
+    """Muestra un menú simple y felicita la elección."""
 
     options = {
         "1": "Login",
@@ -15,6 +15,11 @@ def menu() -> None:
         "3": "Create seam",
         "4": "Download Copernicus data",
     }
+
+    # Si hubiera subcomandos, no ejecutar el menú principal.
+    if ctx.invoked_subcommand:
+        return
+
     console.print("[cyan]Select option:[/]")
     for key, label in options.items():
         console.print(f"[bold white]{key}[/]: {label}")
