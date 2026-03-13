@@ -8,6 +8,9 @@ description: >
 
 # Guidelines
 
+## Lema
+- MENOS ES MAS: simplicidad, claridad y sólo lo necesario para aportar valor.
+
 ## Branching
 - `main`: estable; merges vía PR.
 - `codex/main_dev_pro`: integración continua.
