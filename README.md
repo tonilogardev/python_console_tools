@@ -48,3 +48,4 @@ python -m python_console_tools --help
 - Ajusta `project.name` y autoría en `pyproject.toml`.
 - Para publicar, ejecuta `git add . && git commit -m "chore: bootstrap" && git push -u origin main`.
 - Consulta estándares en [CONTRIBUTING.md](CONTRIBUTING.md) y [docs/engineering-guidelines.md](docs/engineering-guidelines.md).
+- CI: ver `.github/workflows/ci.yml` (ruff, mypy, pytest+coverage>=85, bandit).
