@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling>=1.21.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "python-console-tools"
+version = "0.1.0"
+description = "CLI tools skeleton built with Typer, logging, and typed settings"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "Your Name", email = "you@example.com"}]
+dependencies = [
+  "typer>=0.12",
+  "rich>=13.7",
+  "pydantic-settings>=2.3",
+  "PyYAML>=6.0",
+  "python-json-logger>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3",
+  "coverage[toml]>=7.4",
+  "ruff>=0.5",
+  "mypy>=1.11",
+  "pre-commit>=3.7",
+  "bandit>=1.7",
+  "pip-audit>=2.7",
+  "types-PyYAML>=6.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-select = ["I", "B", "UP", "C90", "A", "RUF", "S", "N"]
+ignore = ["E203"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["python_console_tools"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+disallow_untyped_defs = true
+warn_unused_ignores = true
+warn_return_any = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "-ra --strict-markers"
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.bandit]
+skips = ["B101"]
